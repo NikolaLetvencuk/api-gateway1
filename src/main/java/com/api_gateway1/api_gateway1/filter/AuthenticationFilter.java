@@ -33,12 +33,13 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
 
         if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+            System.err.println("!!! Authorization header nije prisutan u zahtevu!!!");
             return onError(exchange, HttpStatus.UNAUTHORIZED);
         }
         final String authHeader = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
 
         return webClientBuilder.build().get()
-                .uri("http://STAKEHOLDERS/auth/validate")
+                .uri("http://localhost:8081/auth/validate")
                 .header(HttpHeaders.AUTHORIZATION, authHeader)
                 .retrieve()
                 .bodyToMono(ValidationResponse.class)
@@ -53,10 +54,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                         System.out.println("Odgovor (response) je NULL!");
                     }
                     System.out.println("------------------------------------------------------");
+                    System.out.println("➕ Gateway dodaje header X-Username: " + response.getUsername());
                     ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                             .header("X-Username", response.getUsername())
                             .header("X-User-Role", response.getRole())
                             .build();
+                    System.out.println("➡️ Prosleđujem request dalje na: " + path);
                     return chain.filter(exchange.mutate().request(modifiedRequest).build());
                 })
                 .onErrorResume(e -> {
