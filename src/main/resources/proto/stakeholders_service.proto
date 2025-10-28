@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package stakeholders;
+
+option java_multiple_files = true;
+option java_package = "com.stakeholders.grpc.proto";
+option java_outer_classname = "StakeholdersServiceProto";
+
+// Stakeholders Service Definition
+service StakeholdersService {
+  // Provera da li korisnik postoji
+  rpc CheckUserExists (CheckUserExistsRequest) returns (CheckUserExistsResponse);
+  
+  // Provera da li je korisnik blokiran
+  rpc IsUserBlocked (IsUserBlockedRequest) returns (IsUserBlockedResponse);
+  
+  // Dohvatanje korisničke uloge
+  rpc GetUserRole (GetUserRoleRequest) returns (GetUserRoleResponse);
+}
+
+// Request: Provera postojanja korisnika
+message CheckUserExistsRequest {
+  string username = 1;
+}
+
+// Response: Da li korisnik postoji
+message CheckUserExistsResponse {
+  bool exists = 1;
+}
+
+// Request: Provera da li je korisnik blokiran
+message IsUserBlockedRequest {
+  string username = 1;
+}
+
+// Response: Da li je korisnik blokiran
+message IsUserBlockedResponse {
+  bool blocked = 1;
+}
+
+// Request: Dohvatanje uloge
+message GetUserRoleRequest {
+  string username = 1;
+}
+
+// Response: Uloga korisnika
+message GetUserRoleResponse {
+  string role = 1;
+}
+
