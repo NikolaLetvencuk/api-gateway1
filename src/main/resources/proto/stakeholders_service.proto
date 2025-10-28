@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package stakeholders;
+
+option java_multiple_files = true;
+option java_package = "com.stakeholders.grpc.proto";
+option java_outer_classname = "StakeholdersServiceProto";
+
+service StakeholdersService {
+  rpc CheckUserExists (CheckUserExistsRequest) returns (CheckUserExistsResponse);
+
+  rpc IsUserBlocked (IsUserBlockedRequest) returns (IsUserBlockedResponse);
+
+  rpc GetUserRole (GetUserRoleRequest) returns (GetUserRoleResponse);
+}
+
+message CheckUserExistsRequest {
+  string username = 1;
+}
+
+message CheckUserExistsResponse {
+  bool exists = 1;
+}
+
+message IsUserBlockedRequest {
+  string username = 1;
+}
+
+message IsUserBlockedResponse {
+  bool blocked = 1;
+}
+
+message GetUserRoleRequest {
+  string username = 1;
+}
+
+message GetUserRoleResponse {
+  string role = 1;
+}
+
