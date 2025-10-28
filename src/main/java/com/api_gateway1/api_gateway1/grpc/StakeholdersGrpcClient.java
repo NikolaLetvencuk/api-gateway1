@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
-/**
- * Ručni gRPC klijent za Stakeholders Service
- * (BEZ Spring Boot gRPC starter-a da bi bio kompatibilan sa WebFlux)
- */
 @Component
 public class StakeholdersGrpcClient {
 
@@ -27,12 +23,10 @@ public class StakeholdersGrpcClient {
 
     @PostConstruct
     public void init() {
-        // Kreiramo gRPC channel ručno
         channel = ManagedChannelBuilder.forAddress(host, port)
-                .usePlaintext() // Bez TLS enkr ipcije (za razvoj)
+                .usePlaintext()
                 .build();
 
-        // Kreiramo blocking stub za sinhrone pozive
         blockingStub = StakeholdersServiceGrpc.newBlockingStub(channel);
 
         System.out.println("✅ gRPC Client povezan na Stakeholders Service: " + host + ":" + port);
@@ -46,9 +40,6 @@ public class StakeholdersGrpcClient {
         }
     }
 
-    /**
-     * Provera da li korisnik postoji
-     */
     public boolean checkUserExists(String username) {
         try {
             System.out.println("🔄 Gateway gRPC: Proveravam da li korisnik '" + username + "' postoji...");
@@ -70,9 +61,6 @@ public class StakeholdersGrpcClient {
         }
     }
 
-    /**
-     * Provera da li je korisnik blokiran
-     */
     public boolean isUserBlocked(String username) {
         try {
             System.out.println("🔄 Gateway gRPC: Proveravam da li je korisnik '" + username + "' blokiran...");
@@ -94,9 +82,6 @@ public class StakeholdersGrpcClient {
         }
     }
 
-    /**
-     * Dohvatanje korisničke uloge
-     */
     public String getUserRole(String username) {
         try {
             System.out.println("🔄 Gateway gRPC: Dohvatam ulogu korisnika '" + username + "'...");

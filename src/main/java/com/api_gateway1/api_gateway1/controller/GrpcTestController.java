@@ -10,11 +10,6 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * WebFlux REST Controller koji koristi gRPC klijent
- * 
- * Gateway prima HTTP zahtev i interno poziva Stakeholders preko gRPC-a
- */
 @RestController
 public class GrpcTestController {
 
@@ -25,22 +20,15 @@ public class GrpcTestController {
         this.grpcClient = grpcClient;
     }
 
-    /**
-     * Test endpoint: Gateway → gRPC → Stakeholders
-     * 
-     * HTTP GET: http://localhost:8080/grpc/user/check?username=ratkovac
-     */
     @GetMapping("/grpc/user/check")
     public Mono<Map<String, Object>> checkUser(@RequestParam String username) {
         System.out.println("📥 Gateway: HTTP zahtev primljen za proveru korisnika: " + username);
 
         return Mono.fromCallable(() -> {
-            // Pozivamo gRPC metode (blokirajuće, ali u Mono.fromCallable se izvršava async)
             boolean exists = grpcClient.checkUserExists(username);
             boolean blocked = grpcClient.isUserBlocked(username);
             String role = grpcClient.getUserRole(username);
 
-            // Kreiramo odgovor
             Map<String, Object> response = new HashMap<>();
             response.put("username", username);
             response.put("exists", exists);
