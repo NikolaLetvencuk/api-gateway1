@@ -8,6 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -38,7 +39,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         final String authHeader = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
 
         return webClientBuilder.build().get()
-                .uri("http://STAKEHOLDERS/auth/validate")
+                .uri("http://localhost:8081/auth/validate")
                 .header(HttpHeaders.AUTHORIZATION, authHeader)
                 .retrieve()
                 .bodyToMono(ValidationResponse.class)
