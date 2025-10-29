@@ -1,0 +1,60 @@
+# Docker-specific configuration for API Gateway
+# Koristi direktne URL-ove umesto Eureka load balancera
+
+spring:
+  application:
+    name: api-gateway1
+  
+  cloud:
+    gateway:
+      # Disable Eureka discovery u Docker-u
+      discovery:
+        locator:
+          enabled: false
+      
+      # Direktni routing ka servisima u Docker mreži
+      routes:
+        # Stakeholders Service
+        - id: stakeholders_route
+          uri: http://service-stakeholders:8081
+          predicates:
+            - Path=/api/stakeholders/**
+          filters:
+            - RewritePath=/api/stakeholders/(?<segment>.*), /${segment}
+        
+        # Tours Service
+        - id: tours_service_route
+          uri: http://service-tours:8083
+          predicates:
+            - Path=/api/tours/**
+          filters:
+            - RewritePath=/api/tours/(?<segment>.*), /api/tours/${segment}
+      
+      # CORS configuration
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:4200"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowed-headers: "*"
+            allow-credentials: true
+
+# Disable Eureka client u Docker-u
+eureka:
+  client:
+    enabled: false
+
+# gRPC Client Configuration (za Stakeholders)
+grpc:
+  stakeholders:
+    host: service-stakeholders
+    port: 9091
+
+server:
+  port: 8080
+

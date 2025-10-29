@@ -22,6 +22,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    private final String stakeholdersServiceUrl;
+
+    public AuthenticationFilter() {
+        // Koristi environment varijablu (Docker: service-stakeholders:8081, Lokalno: localhost:8081)
+        this.stakeholdersServiceUrl = System.getenv("STAKEHOLDERS_SERVICE_URL") != null 
+            ? System.getenv("STAKEHOLDERS_SERVICE_URL") 
+            : "http://localhost:8081";
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -40,7 +49,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         final String authHeader = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
 
         return webClientBuilder.build().get()
-                .uri("http://localhost:8081/auth/validate")
+                .uri(stakeholdersServiceUrl + "/auth/validate")
                 .header(HttpHeaders.AUTHORIZATION, authHeader)
                 .retrieve()
                 .bodyToMono(ValidationResponse.class)
