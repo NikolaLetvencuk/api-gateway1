@@ -35,7 +35,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        final List<String> publicEndpoints = List.of("/auth/register", "/auth/login");
+        final List<String> publicEndpoints = List.of("/auth/register", "/auth/login", "/uploads/profile-pictures");
         String path = request.getURI().getPath();
         boolean isPublic = publicEndpoints.stream().anyMatch(uri -> path.contains(uri));
         if (isPublic) {

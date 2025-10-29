@@ -25,6 +25,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
+			<version>4.1.1</version>
 		</dependency>
 
 		<!-- Zavisnost za povezivanje na Eureka server (Service Discovery) -->
